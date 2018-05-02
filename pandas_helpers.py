@@ -9,7 +9,7 @@ def apply_preprocess_steps(features_preprocess_steps, df):
             df, _ = auto_one_hot_encoder(df, step['column'], step['params'])
     return df
 
-def create_preprocess_step(df):
+def gui_create_preprocess_step(df):
     step = {}
     step['type'] = input('type? [ one_hot_encode | scale ]: ')
     

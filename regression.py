@@ -1,68 +1,41 @@
-# Regression
-
-# Importing the libraries
-import numpy as np
 import pandas as pd
 from plot_helper import plot_2d_regression
-from sklearn.cross_validation import train_test_split
-import json
-from pandas_helpers import apply_preprocess_steps, auto_one_hot_encoder, \
-    create_preprocess_step
-from gui_helpers import gui_get_column
+from helpers import SessionManager
 
-data_preprocess_path = 'Salary_Data_data_preprocess.json'
-dataset_path = './Part_02-Regression/Section_04-Simple_Linear_Regression/Salary_Data.csv'
+# dataset_path = './Part_02-Regression/Section_04-Simple_Linear_Regression/Salary_Data.csv'
+# dataset_path = './Part_02-Regression/Section_05-Multiple_Linear_Regression/50_Startups.csv'
 
-data_preprocess_path = '50_Startups-data_preprocess.json'
-dataset_path = './Part_02-Regression/Section_05-Multiple_Linear_Regression/50_Startups.csv'
 
-# Importing the dataset
-dataset = pd.read_csv(dataset_path)
 
-# Load Preprocess Steps
-try:
-    with open(data_preprocess_path, 'r') as file:
-        session_params = json.loads(file.read())
-except FileNotFoundError as e:
-    session_params = {}
+# Preprocess Data
+# TODO: Find last session
+prev_session = None
+session_counter = 0
+
+session_counter += 1
+session_name = '0_sess_%s' % session_counter
+
+sm = SessionManager(session_name)
+if prev_session:
+    sm.load_session_from_file(prev_session)
+sm.gui_start()
+
+dataset = sm.get_dataset()
+
+X, y = sm.separate_feature_from_target(dataset)
+
+X_train, X_test, y_train, y_test = sm.train_test_split(X, y)
+
+X_train = sm.apply_preprocess_steps(X_train)
+
+x_train = sm.gui_create_preprocess_steps(X_train)
     
-preprocess_params = session_params.get('preprocess_params', [])
-    
-# Get Target Column by name
-target_column = session_params.get('target_column')
-if not target_column:
-    target_column = gui_get_column(dataset)
-    session_params['target_column'] = target_column
-    
-# Separate Target from Features
-X = dataset.drop(target_column, axis=1)
-y = dataset[target_column]
+X_test = sm.apply_preprocess_steps(X_test)
 
-# Splitting the dataset into the Training set and Test set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 1/3, random_state = 0)
 
-# Preprocess Train Features
-X_train = apply_preprocess_steps(preprocess_params, X_train)
-
+sm.save()
+prev_session = sm.name
     
-# Create New Preprocess Feature Step
-print(10*"=", 'Create Preprocess Step')
-while True:
-    if input('Do you wish to create an extra preprocess step [y/N]: ') != 'y':
-        break
-    
-    X_train, step_params = create_preprocess_step(X_train)
-    preprocess_params.append(step_params)
-    
-# Preprocess Test Features
-X_test = apply_preprocess_steps(preprocess_params, X_test)
-
-    
-# Write Preprocess Steps
-session_params['preprocess_params'] = preprocess_params
-with open(data_preprocess_path, 'w') as file:
-    file.write(json.dumps(session_params))
-
 
 # Fitting Simple Linear Regression to the Training set
 from sklearn.linear_model import LinearRegression
