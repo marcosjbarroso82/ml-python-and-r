@@ -1,5 +1,19 @@
 import os
 
+def gui_choose_option(options, msg=None):
+    if msg:
+        print(msg)
+    print('Options:')
+    for option in options:
+        print(options)
+    while True:
+        choice = input('Choose an option: ')
+        print('-- you have chosen %s' % choice)
+        if choice in options:
+            break
+    return choice
+    
+
 def gui_get_file_path(msg=None):
     if not msg:
         msg = 'enter file path'

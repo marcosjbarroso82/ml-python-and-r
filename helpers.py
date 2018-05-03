@@ -1,34 +1,39 @@
 import json, os
-from gui_helpers import gui_get_column, gui_get_file_path
+from gui_helpers import gui_get_column, gui_get_file_path, gui_choose_option
 from pandas_helpers import apply_preprocess_steps, gui_create_preprocess_step
 import pandas as pd
 from sklearn.cross_validation import train_test_split
 
+ML_ACTIONS = ['regression', 'classification']
+ML_MODELS = ['linear']
 
 class SessionManager:
-    
-    conf = {}
-    
-    def __init__(self, name, conf_file=None, df_path=None, *args, **kwargs):
-        if conf_file:
-            self.load_session_from_file(conf_file)
-        self.name = name
+
+    conf = {}    
         
-        if df_path:
-            assert os.path.isfile(df_path), 'Dataset file Not Found!'
-            self.conf['df_path'] = df_path
-            
-        self.conf['random_state'] = '0' # TODO: Move to sanitize
-    
     def sanitize(self):
         """
         Use this function to set all the required states and not having to checkit all the time
         TODO: Implement
         """
-        pass
+        self.conf['random_state'] = '0' # TODO: Move to sanitize
     
     def gui_start(self):
         print('gui_start')
+        if input('start from previous session?[y/N]: ') == 'y':
+            prev_session = input('enter previous session file path: ')
+            self.load_session_from_file(prev_session)
+        
+        self.name = input('enter new session name: ')
+        
+        if 'action' not in self.conf.keys():
+            self.conf['action'] = gui_choose_option(ML_ACTIONS, 'Choose a ML action')
+            if self.conf['action'] != 'regression':
+                print(' no es una regression!!!!! es: ', self.conf['action'])
+          
+        if 'model' not in ML_MODELS:
+            self.conf['model'] = gui_choose_option(ML_MODELS, 'Choose a ML model')
+            
         if 'df_path' not in self.conf.keys():
             self.conf['df_path'] = gui_get_file_path('Enter Dataset file path')
         
@@ -43,6 +48,8 @@ class SessionManager:
         
         if not 'steps' in self.conf.keys():
             self.conf['steps'] = []
+            
+        self.sanitize()
         
     def apply_preprocess_steps(self, df):
         return apply_preprocess_steps(self.conf['steps'], df)
@@ -71,6 +78,12 @@ class SessionManager:
     
     def train_test_split(self, X, y):
         return train_test_split(X, y, test_size = float(self.conf['test_size']), random_state=int(self.conf['random_state']))
+    
+    def get_action(self):
+        return self.conf.get('action')
+    
+    def get_model(self):
+        return self.conf.get('model')
     
     def save(self):
         with open(self.name, 'w') as file:

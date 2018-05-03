@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 def apply_preprocess_steps(features_preprocess_steps, df):
-    print(10*"=", 'Preprocess Features')
+    print('Preprocess Features')
     for step in features_preprocess_steps:
         print('step', step)    
         if step['type'] == 'one_hot_encode':
