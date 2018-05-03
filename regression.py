@@ -6,14 +6,12 @@ from helpers import SessionManager
 # dataset_path = './Part_02-Regression/Section_05-Multiple_Linear_Regression/50_Startups.csv'
 
 
+if input('start from previous session?[y/N]: ') == 'y':
+    prev_session = input('enter previous session file path: ')
+else:
+    prev_session = None
 
-# Preprocess Data
-# TODO: Find last session
-prev_session = None
-session_counter = 0
-
-session_counter += 1
-session_name = '0_sess_%s' % session_counter
+session_name = input('enter new session name: ')
 
 sm = SessionManager(session_name)
 if prev_session:
