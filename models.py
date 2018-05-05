@@ -15,7 +15,8 @@ class Regressor:
             self.regressor = SVR(kernel = 'rbf') # TODO: Add more kernels
         elif type == 'decision-tree':
             self.regressor = DecisionTreeRegressor(random_state = 0) # TODO: Move random state to a proper place
-        el
+        elif type == 'random-forest':
+            self.regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
         
         # TODO: move degree to a model param
         self.degree = degree # used for polinomial regressions
