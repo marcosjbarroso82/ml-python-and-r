@@ -1,15 +1,23 @@
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.svm import SVR
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 class Regressor:
     
+    # TODO: Create a model conf
     def __init__(self, type, degree=1):
         self.type = type
         if type == 'linear':
             self.regressor = LinearRegression()
         elif type == 'svr':
             self.regressor = SVR(kernel = 'rbf') # TODO: Add more kernels
+        elif type == 'decision-tree':
+            self.regressor = DecisionTreeRegressor(random_state = 0) # TODO: Move random state to a proper place
+        el
+        
+        # TODO: move degree to a model param
         self.degree = degree # used for polinomial regressions
         
     def pre_process(self, df):
