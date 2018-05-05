@@ -13,19 +13,21 @@ X, y = sm.separate_feature_from_target(dataset)
 X_train, X_test, y_train, y_test = sm.train_test_split(X, y)
 
 X_train = sm.apply_preprocess_steps(X_train)
-
+# TODO: Create more preprocess steps
 X_train = sm.gui_create_preprocess_steps(X_train)
     
 X_test = sm.apply_preprocess_steps(X_test)
 
+# TODO: Implement the other models
 if sm.get_action() == 'regression':
     model = Regressor(sm.get_model())
+    
 model.fit(X_train, y_train)
 
 # Predicting the Test set results
 y_pred = model.predict(X_test)
 
-# TODO: Log stadistics
+# TODO: Log metrics
 sm.save()
 prev_session = sm.name
 
