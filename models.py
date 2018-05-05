@@ -1,5 +1,6 @@
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.svm import SVR
 
 class Regressor:
     
@@ -7,13 +8,15 @@ class Regressor:
         self.type = type
         if type == 'linear':
             self.regressor = LinearRegression()
+        elif type == 'svr':
+            self.regressor = SVR(kernel = 'rbf') # TODO: Add more kernels
         self.degree = degree # used for polinomial regressions
         
     def pre_process(self, df):
-        if self.degree == 1 and len(df.columns) > 1:
+        if self.type == 'linear' and self.degree == 1 and len(df.columns) > 1:
             # Mutliple Linear Regression
             df.insert(0, 'ones', 1)
-        elif self.degree > 1:
+        elif self.type == 'linear' and self.degree > 1:
             # Polinomial Linear Regression
             poly_reg = PolynomialFeatures(degree = self.degree) # TODO: poly_reg is a good name?
             df = poly_reg.fit_transform(df)
