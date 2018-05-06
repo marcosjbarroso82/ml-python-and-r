@@ -2,6 +2,7 @@ from helpers import SessionManager
 from models import Regressor
 # dataset_path = './Part_02-Regression/Section_04-Simple_Linear_Regression/Salary_Data.csv'
 # dataset_path = './Part_02-Regression/Section_05-Multiple_Linear_Regression/50_Startups.csv'
+# dataset_path = './Part_02-Regression/Section_06-Polynomial_Regression/Position_Salaries.csv'
 
 sm = SessionManager()
 sm.gui_start()

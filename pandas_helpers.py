@@ -1,17 +1,20 @@
 import numpy as np
 import pandas as pd
 
+# TODO: hacer una funcion que sea aplicar y crear. En lugar de tener dos
 def apply_preprocess_steps(features_preprocess_steps, df):
     print('Preprocess Features')
     for step in features_preprocess_steps:
         print('step', step)    
         if step['type'] == 'one_hot_encode':
             df, _ = auto_one_hot_encoder(df, step['column'], step['params'])
+        if step['type'] == 'drop_column':
+            df, _ = df.drop(step['column'], axis=1), step
     return df
 
 def gui_create_preprocess_step(df):
     step = {}
-    step['type'] = input('type? [ one_hot_encode | scale ]: ')
+    step['type'] = input('type? [ one_hot_encode | scale | drop_column]: ')
     
     if step['type'] == 'one_hot_encode':
         while True:
@@ -19,8 +22,15 @@ def gui_create_preprocess_step(df):
             step['column'] = input('Choose Column: ')
             if step['column'] in df.columns:
                 break
-        
-        df, step['params'] = auto_one_hot_encoder(df, step['column'])
+            df, step['params'] = auto_one_hot_encoder(df, step['column'])
+    
+    if step['type'] == 'drop_column':
+        while True:
+            print('Columns:', df.columns)
+            step['column'] = input('Choose Column: ')
+            if step['column'] in df.columns:
+                df, step = df.drop(step['column'], axis=1), step
+                break
         
     return df, step
         
