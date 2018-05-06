@@ -16,7 +16,7 @@ class Regressor:
         elif type == 'decision-tree':
             self.regressor = DecisionTreeRegressor(random_state=conf['random_state'])
         elif type == 'random-forest':
-            self.regressor = RandomForestRegressor(**conf)
+            self.regressor = RandomForestRegressor(n_estimators=conf['n_estimators'], random_state=conf['random_state'])
         
     def pre_process(self, df):
         if self.type == 'linear' and self.conf['degree'] == 1 and len(df.columns) > 1:
