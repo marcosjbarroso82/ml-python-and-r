@@ -1,5 +1,5 @@
 import json, os
-from gui_helpers import gui_get_column, gui_get_file_path, gui_choose_option
+from gui_helpers import gui_get_column, gui_get_file_path, gui_choose_option, gui_get_integer
 from pandas_helpers import apply_preprocess_steps, gui_create_preprocess_step
 import pandas as pd
 from sklearn.cross_validation import train_test_split
@@ -9,7 +9,9 @@ ML_MODELS = ['linear', 'svr', 'decision-tree', 'random-forest']
 
 class SessionManager:
 
-    conf = {}    
+    conf = {
+        'random_state': 0
+            }    
         
     def sanitize(self):
         """
@@ -50,8 +52,10 @@ class SessionManager:
             self.conf['model'] = gui_choose_option(ML_MODELS, 'Choose a ML model')
             self.conf['model_conf'] = {}
             self.conf['model_conf']['random_state'] = 0
+            if self.conf['model'] == 'linear':
+                self.conf['model_conf']['degree'] = gui_get_integer(default=1, min=1, max=10, msg='Enter degree')
             if self.conf['model'] == 'svr':
-                self.conf['model_conf']['kernel'] = gui_choose_option(['rbf'] = 'Choose a kernel')
+                self.conf['model_conf']['kernel'] = gui_choose_option(['rbf'], 'Choose a kernel')
             if self.conf['model'] == 'random-forest':
                 self.conf['model_conf']['n_estimators'] = 10
             

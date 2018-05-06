@@ -36,3 +36,18 @@ def gui_get_column(dataset, msg=None):
         else:
             print('Wrong answer!')
     return target_column
+
+def gui_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kwargs):
+    while True:
+        value = input('{msg}(min:{min}, max:{max}, default:{default}: '.format(msg=msg, min=min, max=max, default=default))
+        
+        if value == '' and default:
+            value = default
+        
+        try:
+            int_value = int(value)
+            if int_value >= min and int_value <= max:
+                break
+        except ValueError:
+            pass
+    return int_value
