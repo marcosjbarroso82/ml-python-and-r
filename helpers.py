@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.cross_validation import train_test_split
 
 ML_ACTIONS = ['regression', 'classification']
-ML_MODELS = ['linear']
+ML_MODELS = ['linear', 'svr', 'decision-tree', 'random-forest']
 
 class SessionManager:
 
@@ -16,7 +16,7 @@ class SessionManager:
         Use this function to set all the required states and not having to checkit all the time
         TODO: Implement
         """
-        self.conf['random_state'] = '0' # TODO: Move to sanitize
+        # self.conf['random_state'] = '0' # TODO: Move to sanitize
     
     def gui_start(self):
         print('gui_start')
@@ -25,14 +25,6 @@ class SessionManager:
             self.load_session_from_file(prev_session)
         
         self.name = input('enter new session name: ')
-        
-        if 'action' not in self.conf.keys():
-            self.conf['action'] = gui_choose_option(ML_ACTIONS, 'Choose a ML action')
-            if self.conf['action'] != 'regression':
-                print(' no es una regression!!!!! es: ', self.conf['action'])
-          
-        if 'model' not in ML_MODELS:
-            self.conf['model'] = gui_choose_option(ML_MODELS, 'Choose a ML model')
             
         if 'df_path' not in self.conf.keys():
             self.conf['df_path'] = gui_get_file_path('Enter Dataset file path')
@@ -48,6 +40,22 @@ class SessionManager:
         
         if not 'steps' in self.conf.keys():
             self.conf['steps'] = []
+            
+        if 'action' not in self.conf.keys():
+            self.conf['action'] = gui_choose_option(ML_ACTIONS, 'Choose a ML action')
+            if self.conf['action'] != 'regression':
+                print(' no es una regression!!!!! es: ', self.conf['action'])
+            
+        if 'model' not in self.conf.keys():
+            self.conf['model'] = gui_choose_option(ML_MODELS, 'Choose a ML model')
+            self.conf['model_conf'] = {}
+            self.conf['model_conf']['random_state'] = 0
+            if self.conf['model'] == 'svr':
+                self.conf['model_conf']['kernel'] = gui_choose_option(['rbf'] = 'Choose a kernel')
+            if self.conf['model'] == 'random-forest':
+                self.conf['model_conf']['n_estimators'] = 10
+            
+        # Configure model
             
         self.sanitize()
         
@@ -84,6 +92,9 @@ class SessionManager:
     
     def get_model(self):
         return self.conf.get('model')
+    
+    def get_model_conf(self):
+        return self.conf.get('model_conf', {})
     
     def save(self):
         with open(self.name, 'w') as file:

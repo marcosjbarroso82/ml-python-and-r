@@ -20,7 +20,7 @@ X_test = sm.apply_preprocess_steps(X_test)
 
 # TODO: Implement the other models
 if sm.get_action() == 'regression':
-    model = Regressor(sm.get_model())
+    model = Regressor(sm.get_model(), sm.get_model_conf())
     
 model.fit(X_train, y_train)
 

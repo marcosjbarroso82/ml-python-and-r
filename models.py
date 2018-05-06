@@ -6,17 +6,16 @@ from sklearn.ensemble import RandomForestRegressor
 
 class Regressor:
     
-    # TODO: Create a model conf
-    def __init__(self, type, degree=1):
+    def __init__(self, type, conf, degree=1):
         self.type = type
         if type == 'linear':
             self.regressor = LinearRegression()
         elif type == 'svr':
-            self.regressor = SVR(kernel = 'rbf') # TODO: Add more kernels
+            self.regressor = SVR(**conf)
         elif type == 'decision-tree':
-            self.regressor = DecisionTreeRegressor(random_state = 0) # TODO: Move random state to a proper place
+            self.regressor = DecisionTreeRegressor(**conf)
         elif type == 'random-forest':
-            self.regressor = RandomForestRegressor(n_estimators = 10, random_state = 0)
+            self.regressor = RandomForestRegressor(**conf)
         
         # TODO: move degree to a model param
         self.degree = degree # used for polinomial regressions
