@@ -14,7 +14,7 @@ class Regressor:
         elif type == 'svr':
             self.regressor = SVR(kernel=conf['kernel'])
         elif type == 'decision-tree':
-            self.regressor = DecisionTreeRegressor(**conf)
+            self.regressor = DecisionTreeRegressor(random_state=conf['random_state'])
         elif type == 'random-forest':
             self.regressor = RandomForestRegressor(**conf)
         
