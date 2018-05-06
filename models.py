@@ -12,7 +12,7 @@ class Regressor:
         if type == 'linear':
             self.regressor = LinearRegression()
         elif type == 'svr':
-            self.regressor = SVR(**conf)
+            self.regressor = SVR(kernel=conf['kernel'])
         elif type == 'decision-tree':
             self.regressor = DecisionTreeRegressor(**conf)
         elif type == 'random-forest':
