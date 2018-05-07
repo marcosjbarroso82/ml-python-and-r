@@ -1,5 +1,8 @@
 from helpers import SessionManager
-from models import Regressor
+from models import MLModel
+import matplotlib.pyplot as plt
+import numpy as np
+
 # dataset_path = './Part_02-Regression/Section_04-Simple_Linear_Regression/Salary_Data.csv'
 # dataset_path = './Part_02-Regression/Section_05-Multiple_Linear_Regression/50_Startups.csv'
 # dataset_path = './Part_02-Regression/Section_06-Polynomial_Regression/Position_Salaries.csv'
@@ -23,10 +26,10 @@ X_test = sm.apply_preprocess_steps(X_test)
 
 # TODO: Implement the other models
 if sm.get_action() == 'regression':
-    model = Regressor(sm.get_model(), sm.get_model_conf())
+    model = MLModel(sm.get_model(), sm.get_model_conf())
 elif sm.get_action() == 'classification':
     # TODO: Rename class for both Regression and Classification
-    model = Regressor(sm.get_model(), sm.get_model_conf())
+    model = MLModel(sm.get_model(), sm.get_model_conf())
     
     # TODO: Move Feature Scaling to logic
     # Feature Scaling
@@ -46,8 +49,8 @@ prev_session = sm.name
 
 if sm.get_action() == 'regression':
     # Plot
-    # plot_2d_regression(regressor, X_train, y_train)
-    # plot_2d_regression(regressor, X_test, y_test)
+    # plot_2d_regression(MLModel, X_train, y_train)
+    # plot_2d_regression(MLModel, X_test, y_test)
     pass
 elif sm.get_action() == 'classification':
     # TODO: Move Graphics to helpers
@@ -57,7 +60,7 @@ elif sm.get_action() == 'classification':
     X_set, y_set = X_train, y_train
     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
                          np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
-    plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+    plt.contourf(X1, X2, model.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
                  alpha = 0.75, cmap = ListedColormap(('red', 'green')))
     plt.xlim(X1.min(), X1.max())
     plt.ylim(X2.min(), X2.max())
@@ -75,7 +78,7 @@ elif sm.get_action() == 'classification':
     X_set, y_set = X_test, y_test
     X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
                          np.arange(start = X_set[:, 1].min() - 1, stop = X_set[:, 1].max() + 1, step = 0.01))
-    plt.contourf(X1, X2, classifier.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
+    plt.contourf(X1, X2, model.predict(np.array([X1.ravel(), X2.ravel()]).T).reshape(X1.shape),
                  alpha = 0.75, cmap = ListedColormap(('red', 'green')))
     plt.xlim(X1.min(), X1.max())
     plt.ylim(X2.min(), X2.max())

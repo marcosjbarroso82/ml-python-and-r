@@ -5,7 +5,8 @@ import pandas as pd
 from sklearn.cross_validation import train_test_split
 
 ML_ACTIONS = ['regression', 'classification']
-ML_MODELS = ['linear', 'svr', 'decision-tree', 'random-forest']
+ML_REGRESSION_MODELS = ['linear', 'svr', 'decision-tree', 'random-forest']
+ML_CLASSIFICATION_MODELS = ['logistic-classifier', 'knn-classifier', 'svc', 'gaussian_naive_bayes', 'decision-tree-classifier', 'random-forest-classifier']
 
 class SessionManager:
 
@@ -45,11 +46,14 @@ class SessionManager:
             
         if 'action' not in self.conf.keys():
             self.conf['action'] = gui_choose_option(ML_ACTIONS, 'Choose a ML action')
-            if self.conf['action'] != 'regression':
-                print(' no es una regression!!!!! es: ', self.conf['action'])
             
         if 'model' not in self.conf.keys():
-            self.conf['model'] = gui_choose_option(ML_MODELS, 'Choose a ML model')
+            if self.conf['action'] == 'regression':
+                model_choices = ML_REGRESSION_MODELS
+            elif self.conf['action'] == 'classification':
+                model_choices = ML_CLASSIFICATION_MODELS
+            self.conf['model'] = gui_choose_option(model_choices, 'Choose a ML model')
+            
             self.conf['model_conf'] = {}
             self.conf['model_conf']['random_state'] = 0
             if self.conf['model'] == 'linear':
@@ -58,8 +62,6 @@ class SessionManager:
                 self.conf['model_conf']['kernel'] = gui_choose_option(['rbf'], 'Choose a kernel')
             if self.conf['model'] == 'random-forest':
                 self.conf['model_conf']['n_estimators'] = 10
-            
-        # Configure model
             
         self.sanitize()
         
