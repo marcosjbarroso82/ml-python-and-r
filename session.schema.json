@@ -1,0 +1,15 @@
+{  
+  "type": "object",  
+  "required": ["name"],
+  "properties": {
+    "name": {      
+      "type": "string"
+    },
+    "ds_path": {
+      "type": "string"      
+    },    
+    "model_path": {
+      "type": "string"      
+    }
+  }
+}

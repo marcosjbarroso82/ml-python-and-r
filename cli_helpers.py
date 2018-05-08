@@ -1,20 +1,51 @@
 import os
 
-def gui_choose_option(options, msg=None):
+def json_cast_value(value, value_type):
+    # TODO: Implement all types
+    if value_type == 'integer':
+        try:
+            value = int(value)
+        except ValueError:
+            return None
+    return value
+
+def cli_json_schema_update_prop(prop, obj, schema):
+    value_type = schema['properties'][prop].get('type')
+    while True:
+        value = input('enter %s: ' % prop)
+        
+        if value: # TODO: Handle not required properties
+            value = json_cast_value(value, value_type)
+            if value == None:
+                continue
+            # TODO: Check other validations
+            break
+    obj[prop] = value
+    return obj
+
+def cli_confirm(msg):
+    while True:
+        answer = input(msg)
+        if answer == 'n':
+            return False
+        elif answer == 'y':
+            return True
+
+def cli_choose_option(options, msg=None):
     if msg:
         print(msg)
     print('Options:')
     for option in options:
-        print(options)
+        print(option)
     while True:
         choice = input('Choose an option: ')
-        print('-- you have chosen %s' % choice)
         if choice in options:
             break
+        print('Wrong choice')
     return choice
     
 
-def gui_get_file_path(msg=None):
+def cli_get_file_path(msg=None):
     if not msg:
         msg = 'enter file path'
     while True:
@@ -23,7 +54,7 @@ def gui_get_file_path(msg=None):
             break
     return path
 
-def gui_get_column(dataset, msg=None):
+def cli_get_column(dataset, msg=None):
     if not msg:
         msg = 'Enter Column name'
     while True:
@@ -37,7 +68,7 @@ def gui_get_column(dataset, msg=None):
             print('Wrong answer!')
     return target_column
 
-def gui_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kwargs):
+def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kwargs):
     while True:
         value = input('{msg}(min:{min}, max:{max}, default:{default}: '.format(msg=msg, min=min, max=max, default=default))
         
