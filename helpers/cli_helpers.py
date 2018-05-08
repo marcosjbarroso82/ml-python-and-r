@@ -1,11 +1,19 @@
 import os
-from .json_helpers import load_json_from_file, json_cast_value
+from .json_helpers import load_json_from_file, json_cast_value, json_get_errors
 
+def cli_json_print_errors(obj, schema):
+    errors = json_get_errors(obj, schema)
+    if errors:
+        print('You have to correct this errors:')
+        for prop in errors.keys():
+            for error in errors[prop]:
+                print('%s: %s' % (prop, error))
 
 def cli_json_override_property(obj, schema, confirm_prompt=False):
     if confirm_prompt and not cli_confirm('Do you want to override a property?[y/n]: '):
             return
-    prop = cli_choose_option(obj.keys())
+    props = set(list(obj.keys()) + schema.get('required', []))
+    prop = cli_choose_option(props)
     obj = cli_json_schema_update_prop(prop, obj, schema)
     return obj
 
