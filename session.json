@@ -1,0 +1,5 @@
+{
+    "name": "session", 
+    "ds_path": "ds_path", 
+    "model_path": "model_path"
+}

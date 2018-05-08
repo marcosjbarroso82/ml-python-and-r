@@ -1,19 +1,18 @@
 import os
+from .json_helpers import load_json_from_file, json_cast_value
 
-def json_cast_value(value, value_type):
-    # TODO: Implement all types
-    if value_type == 'integer':
-        try:
-            value = int(value)
-        except ValueError:
-            return None
-    return value
+
+def cli_json_override_property(obj, schema, confirm_prompt=False):
+    if confirm_prompt and not cli_confirm('Do you want to override a property?[y/n]: '):
+            return
+    prop = cli_choose_option(obj.keys())
+    obj = cli_json_schema_update_prop(prop, obj, schema)
+    return obj
 
 def cli_json_schema_update_prop(prop, obj, schema):
     value_type = schema['properties'][prop].get('type')
     while True:
         value = input('enter %s: ' % prop)
-        
         if value: # TODO: Handle not required properties
             value = json_cast_value(value, value_type)
             if value == None:
@@ -43,11 +42,10 @@ def cli_choose_option(options, msg=None):
             break
         print('Wrong choice')
     return choice
-    
 
 def cli_get_file_path(msg=None):
     if not msg:
-        msg = 'enter file path'
+        msg = 'enter file path: '
     while True:
         path = input(msg)
         if os.path.isfile(path):
@@ -82,3 +80,7 @@ def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kw
         except ValueError:
             pass
     return int_value
+
+def cli_load_json_from_file():
+    path = cli_get_file_path()
+    return load_json_from_file(path)

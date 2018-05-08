@@ -1,15 +1,17 @@
 {  
   "type": "object",  
-  "required": ["name"],
+  "required": ["name", "ds_path", "model_path"],
   "properties": {
     "name": {      
       "type": "string"
     },
     "ds_path": {
-      "type": "string"      
+      "type": "string",
+      "x-type": "file_path"      
     },    
     "model_path": {
-      "type": "string"      
+      "type": "string",
+      "x-type": "file_path"
     }
   }
 }
