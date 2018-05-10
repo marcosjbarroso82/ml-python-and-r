@@ -1,30 +1,34 @@
 from helpers.cli_helpers import cli_json_override_property, cli_load_json_from_file, cli_json_print_errors
 from helpers.json_helpers import load_json_from_file
 from jsonschema import validate, Draft3Validator, Draft4Validator, Draft6Validator, FormatChecker, ErrorTree
-
+import copy
 
 class JsonObject():
+        
     def __init__(self, schema, instance={}):
-        self.original_schema = schema
-        self.instance = instance
-        self.errors = {}
-        self.schema = schema    
+       # self.init(schema, instance)
+        self.schema = copy.deepcopy(schema)
+        self.instance = copy.deepcopy(instance)
     
     def _convertDraft7to6(self, instance, shema):
-        ns = schema
+        ns = copy.deepcopy(schema)
         dependencies = ns.get('dependencies', {})
         if dependencies:
             for dk in dependencies.keys():
                 d = dependencies[dk]
                 if 'if' in d.keys():
-                    # TODO: check condition is True
-                    if True:
+                    sub_schema = d.get('if')
+                    v = Draft6Validator(sub_schema)
+                    if v.is_valid(instance):
                         dependencies[dk] = d.get('then')
-        ns['dependencies'] = dependencies
+                    elif d.get('else'):
+                        dependencies[dk] = d.get('else')
+                            
+            ns['dependencies'] = dependencies
         return ns
         
     def _get_updated_schema(self, instance, schema):
-        current_schema = schema
+        current_schema = copy.deepcopy(schema)
         
         while True:
             v = Draft6Validator(current_schema)
@@ -52,8 +56,11 @@ class JsonObject():
         # for error in errors:
         #     print(error.message)
 
-schema = load_json_from_file('if-exists-and-condiftion.schema.json')
+schema2 = load_json_from_file('if-exists-and-condiftion.schema.json')
 instance = {"x": "v"}
+
+#schema = copy.deepcopy(schema2)
+schema = schema2
 
 ob = JsonObject(schema, instance)
 if not ob.is_valid():
