@@ -110,6 +110,21 @@ def cli_json_get_value_by_type(type, msg=None):
                 return value
             except ValueError:
                 pass
-                    
+
+def ask_json_value(instance, path, msg='Enter value for path', type=None):
+    # types = ["null[NOT-IMPLMENTED]", "boolean[NOT-IMPLEMENTED]", "object[NOT-IMPLEMENTED", "array[NOT-IMPLEMENTED]", "number", "integer", "string"]
+    types = ["number", "integer", "string"]
+    print(msg)
+    print('path: %s' % path)
+    if not type:
+        type = cli_choose_option(types, 'Choose a data type')
+    return cli_json_get_value_by_type(type)
             
-    
+def cli_json_object_fix_errors(ob):
+    while True:
+        if ob.is_valid(): break
+        
+        for error in ob.get_errors():
+            print(10*"=")
+            value = ask_json_value(ob.instance, error.set_path, error.message)
+            ob.set_value(list(error.set_path), value)

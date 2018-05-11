@@ -1,4 +1,4 @@
-from helpers.cli_helpers import cli_json_override_property, cli_load_json_from_file, cli_json_print_errors, cli_choose_option, cli_json_get_value_by_type
+from helpers.cli_helpers import cli_json_override_property, cli_load_json_from_file, cli_json_print_errors, cli_choose_option, cli_json_get_value_by_type, cli_json_object_fix_errors
 
 from helpers.json_helpers import load_json_from_file
 from jsonschema import validate, Draft3Validator, Draft4Validator, Draft6Validator, FormatChecker, ErrorTree
@@ -74,44 +74,20 @@ class JsonObject():
         
     
     def set_value(self, path, value):
-        pass
+        new_sub_instance = dict()
+        dpath.util.new(new_sub_instance, path, value)
+        dpath.util.merge(self.instance, new_sub_instance)
         
 
-schema2 = load_json_from_file('if-exists-and-condiftion.schema.json')
+schema = load_json_from_file('if-exists-and-condiftion.schema.json')
 instance = {
         "x": "v",
         "v": "v",
-        "l": {"l1": "ss", "l4": 3, "l32": "sd"},
+        "l": {"l1": "ss", "l4": "3", "l32": "sd"},
         "l3": "l3_base"
         }
 
-#schema = copy.deepcopy(schema2)
-schema = schema2
-
-error_attrs = ['validator', 'validator_value', 'absolute_path', 'set_path']
-
-
-def ask_json_value(instance, path, msg='Enter value for path', type=None):
-    types = ["null[NOT-IMPLMENTED]", "boolean[NOT-IMPLEMENTED]", "object[NOT-IMPLEMENTED", "array[NOT-IMPLEMENTED]", "number", "integer", "string"]
-    print(msg)
-    print('path: %s' % path)
-    if not type:
-        type = cli_choose_option(types, 'Choose a data type')
-    return cli_json_get_value_by_type(type)
-
 
 ob = JsonObject(schema, instance)
-last_error = None
 
-while True:
-    if ob.is_valid(): break
-    
-    errors = ob.get_errors()
-    for error in errors:
-        print(10*"=")
-        #for e_attr in error_attrs:
-        #    print('%s: %s' % (e_attr, getattr(error, e_attr)))
-        value = ask_json_value(ob.instance, error.set_path, error.message)
-        new_sub_instance = dict()
-        dpath.util.new(new_sub_instance, list(error.set_path), value)
-        dpath.util.merge(ob.instance, new_sub_instance)
+cli_json_object_fix_errors(ob)
