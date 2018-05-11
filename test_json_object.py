@@ -62,6 +62,10 @@ class JsonObject():
         
         errors = []
         for error in v.iter_errors(self.instance):
+            error.set_path = copy.deepcopy(error.absolute_path)
+            if error.validator == 'required':
+                error.set_path.append(error.validator_value)
+            
             errors.append(error)
         
         return errors
@@ -80,16 +84,14 @@ instance = {
 #schema = copy.deepcopy(schema2)
 schema = schema2
 
-
+error_attrs = ['validator', 'validator_value', 'absolute_path', 'set_path']
 
 ob = JsonObject(schema, instance)
 last_error = None
 if not ob.is_valid():
     errors = ob.get_errors()
-errors
-"""
-errors = sorted(ob.get_errors(), key=lambda e: e.path)
-for error in errors:
-    last_error = error
-    print(error)
-"""     
+
+    for error in errors:
+        print(10*"=")
+        for e_attr in error_attrs:
+            print('%s: %s' % (e_attr, getattr(error, e_attr)))
