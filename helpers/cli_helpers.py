@@ -92,3 +92,24 @@ def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kw
 def cli_load_json_from_file():
     path = cli_get_file_path()
     return load_json_from_file(path)
+
+def cli_json_get_value_by_type(type, msg=None):
+    # TODO: Implement all types
+    if not msg:
+        msg = 'Enter %s value: ' % type
+        
+        while True:
+            value = input(msg)
+            try:
+                if type == 'string':
+                    pass
+                elif type == 'integer':
+                    value = int(value)
+                elif type == 'number':
+                    value = float(value)
+                return value
+            except ValueError:
+                pass
+                    
+            
+    

@@ -1,7 +1,9 @@
-from helpers.cli_helpers import cli_json_override_property, cli_load_json_from_file, cli_json_print_errors
+from helpers.cli_helpers import cli_json_override_property, cli_load_json_from_file, cli_json_print_errors, cli_choose_option, cli_json_get_value_by_type
+
 from helpers.json_helpers import load_json_from_file
 from jsonschema import validate, Draft3Validator, Draft4Validator, Draft6Validator, FormatChecker, ErrorTree
 import copy
+import dpath
 
 class JsonObject():
         
@@ -62,22 +64,24 @@ class JsonObject():
         
         errors = []
         for error in v.iter_errors(self.instance):
-            error.set_path = copy.deepcopy(error.absolute_path)
+            error.set_path = list(copy.deepcopy(error.absolute_path))
             if error.validator == 'required':
-                error.set_path.append(error.validator_value)
+                error.set_path = error.set_path + error.validator_value
             
             errors.append(error)
         
         return errors
-        # errors = sorted(v.iter_errors(instance), key=lambda e: e.path)
-        # for error in errors:
-        #     print(error.message)
+        
+    
+    def set_value(self, path, value):
+        pass
+        
 
 schema2 = load_json_from_file('if-exists-and-condiftion.schema.json')
 instance = {
         "x": "v",
         "v": "v",
-        "l": {"l1": "ss", "l4": "sub_l3", "l3": 2},
+        "l": {"l1": "ss", "l4": 3, "l32": "sd"},
         "l3": "l3_base"
         }
 
@@ -86,12 +90,28 @@ schema = schema2
 
 error_attrs = ['validator', 'validator_value', 'absolute_path', 'set_path']
 
+
+def ask_json_value(instance, path, msg='Enter value for path', type=None):
+    types = ["null[NOT-IMPLMENTED]", "boolean[NOT-IMPLEMENTED]", "object[NOT-IMPLEMENTED", "array[NOT-IMPLEMENTED]", "number", "integer", "string"]
+    print(msg)
+    print('path: %s' % path)
+    if not type:
+        type = cli_choose_option(types, 'Choose a data type')
+    return cli_json_get_value_by_type(type)
+
+
 ob = JsonObject(schema, instance)
 last_error = None
-if not ob.is_valid():
-    errors = ob.get_errors()
 
+while True:
+    if ob.is_valid(): break
+    
+    errors = ob.get_errors()
     for error in errors:
         print(10*"=")
-        for e_attr in error_attrs:
-            print('%s: %s' % (e_attr, getattr(error, e_attr)))
+        #for e_attr in error_attrs:
+        #    print('%s: %s' % (e_attr, getattr(error, e_attr)))
+        value = ask_json_value(ob.instance, error.set_path, error.message)
+        new_sub_instance = dict()
+        dpath.util.new(new_sub_instance, list(error.set_path), value)
+        dpath.util.merge(ob.instance, new_sub_instance)

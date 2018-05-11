@@ -42,7 +42,7 @@
             "l": {
                 "required": ["l3"],
                 "properties": {
-                    "l3": {"type": "string"},
+                    "l3": {"type": "string", "minLength": 6},
                     "l4": {"type": "integer"}
                 }
             }
