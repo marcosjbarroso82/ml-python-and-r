@@ -48,10 +48,23 @@ class JsonObject():
             return False
         return True
             
-    def get_errors(self):
+    def get_errors_orig(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)
         v = Draft6Validator(current_schema)
         return v.iter_errors(self.instance)
+        # errors = sorted(v.iter_errors(instance), key=lambda e: e.path)
+        # for error in errors:
+        #     print(error.message)
+        
+    def get_errors(self):
+        current_schema = self._get_updated_schema(self.instance, self.schema)
+        v = Draft6Validator(current_schema)
+        
+        errors = []
+        for error in v.iter_errors(self.instance):
+            errors.append(error)
+        
+        return errors
         # errors = sorted(v.iter_errors(instance), key=lambda e: e.path)
         # for error in errors:
         #     print(error.message)
@@ -60,7 +73,7 @@ schema2 = load_json_from_file('if-exists-and-condiftion.schema.json')
 instance = {
         "x": "v",
         "v": "v",
-        "l": {"l1": "ss", "l4": "sub_l3"},
+        "l": {"l1": "ss", "l4": "sub_l3", "l3": 2},
         "l3": "l3_base"
         }
 
@@ -72,7 +85,11 @@ schema = schema2
 ob = JsonObject(schema, instance)
 last_error = None
 if not ob.is_valid():
-    errors = sorted(ob.get_errors(), key=lambda e: e.path)
-    for error in errors:
-        last_error = error
-        print(error)
+    errors = ob.get_errors()
+errors
+"""
+errors = sorted(ob.get_errors(), key=lambda e: e.path)
+for error in errors:
+    last_error = error
+    print(error)
+"""     

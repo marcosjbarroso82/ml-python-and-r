@@ -40,7 +40,11 @@
         ],
         "properties": {
             "l": {
-                "required": ["l3"]
+                "required": ["l3"],
+                "properties": {
+                    "l3": {"type": "string"},
+                    "l4": {"type": "integer"}
+                }
             }
         }
       },
