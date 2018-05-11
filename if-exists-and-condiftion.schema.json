@@ -1,0 +1,54 @@
+{
+  "type": "object",  
+  "properties": {
+    "l":{
+        "type": "object",
+        "required": ["l1"],
+        "properties": {
+            "l1": {"type": "string"},
+            "l2": {"type": "string"}
+        }
+    },
+    "x": {
+      "type": "string",
+      "enum": [
+        "p",
+        "v",
+        "r"
+      ]
+    },
+    "v": {
+      "type": "string"
+    },
+    "p": {
+      "type": "string"
+    }
+  },
+  "dependencies": {
+    "x": {
+      "if": {
+        "properties": {
+          "x": {
+            "const": "v",
+            "type": "string"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "v"
+        ],
+        "properties": {
+            "l": {
+                "required": ["l3"]
+            }
+        }
+      },
+      "else": {
+        "required": [
+          "r"
+        ]
+      }
+    }
+  }
+}

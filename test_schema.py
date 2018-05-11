@@ -14,3 +14,9 @@ sch = session_schema
 if json_get_errors(s, sch):
     cli_json_print_errors(s, sch)
     s = cli_json_override_property(s, sch)
+    
+"""
+cargar el modelo si existe (es un json)
+sino, crearlo en base al schema especificado
+
+"""

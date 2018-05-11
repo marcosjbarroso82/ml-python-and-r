@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": ["foo"],
+  "properties": {
+   "foo": {"type": "string", "enum":["p", "v"]}
+  },
+  "oneOf": [
+    {      
+          "required": ["p1"],
+          "properties": {
+            "foo": {"enum": ["p"]},
+            "p1": {"type": "string"}
+          }
+            
+    },
+    {      
+          "required": ["v1"],
+          "properties": {
+            "foo": {"enum": ["v"]},
+            "v1": {"type": "string"}
+          }
+            
+    }
+  ]
+}

@@ -57,13 +57,22 @@ class JsonObject():
         #     print(error.message)
 
 schema2 = load_json_from_file('if-exists-and-condiftion.schema.json')
-instance = {"x": "v"}
+instance = {
+        "x": "v",
+        "v": "v",
+        "l": {"l1": "ss", "l4": "sub_l3"},
+        "l3": "l3_base"
+        }
 
 #schema = copy.deepcopy(schema2)
 schema = schema2
 
+
+
 ob = JsonObject(schema, instance)
+last_error = None
 if not ob.is_valid():
     errors = sorted(ob.get_errors(), key=lambda e: e.path)
     for error in errors:
-        print(error.message)
+        last_error = error
+        print(error)

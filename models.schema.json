@@ -1,0 +1,50 @@
+{
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "type": {
+      "$id": "/properties/type",
+      "type": "string",
+      "title": "The Type Schema ",
+      "default": "",
+      "examples": [
+        "regression"
+      ]
+    },
+    "model": {
+      "$id": "/properties/model",
+      "type": "string",
+      "title": "The Model Schema ",
+      "default": "",
+      "examples": [
+        "linear"
+      ]
+    },
+    "params": {
+      "$id": "/properties/params",
+      "type": "object",
+      "properties": {
+        "p1": {
+          "$id": "/properties/params/properties/p1",
+          "type": "string",
+          "title": "The P1 Schema ",
+          "default": "",
+          "examples": [
+            "v1"
+          ]
+        },
+        "p2": {
+          "$id": "/properties/params/properties/p2",
+          "type": "string",
+          "title": "The P2 Schema ",
+          "default": "",
+          "examples": [
+            "v2"
+          ]
+        }
+      }
+    }
+  }
+}

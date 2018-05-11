@@ -1,0 +1,31 @@
+{
+  "type": "object",
+"required": ["x"],
+  "properties": {
+    "x": {
+      "type": "string",
+      "enum": [
+        "p",
+        "v"
+      ]
+    },
+    "v": {
+      "type": "string"
+    },
+    "p": {
+      "type": "string"
+    }
+  },
+  "if": {
+    "properties": {
+      "x": {
+        "const": "v", "type": "string"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "v"
+    ]
+  }
+}
