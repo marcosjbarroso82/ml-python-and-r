@@ -67,11 +67,8 @@ class JsonObject():
             error.set_path = list(copy.deepcopy(error.absolute_path))
             if error.validator == 'required':
                 error.set_path = error.set_path + error.validator_value
-            
             errors.append(error)
-        
         return errors
-        
     
     def set_value(self, path, value):
         new_sub_instance = dict()
@@ -80,14 +77,7 @@ class JsonObject():
         
 
 schema = load_json_from_file('if-exists-and-condiftion.schema.json')
-instance = {
-        "x": "v",
-        "v": "v",
-        "l": {"l1": "ss", "l4": "3", "l32": "sd"},
-        "l3": "l3_base"
-        }
-
+instance = load_json_from_file('if-exists-and-condiftion.json')
 
 ob = JsonObject(schema, instance)
-
 cli_json_object_fix_errors(ob)
