@@ -1,6 +1,6 @@
 import os
-from .json_helpers import load_json_from_file, json_cast_value, json_get_errors
-
+from .json_helpers import load_json_from_file, json_cast_value
+"""
 def cli_json_print_errors(obj, schema):
     errors = json_get_errors(obj, schema)
     if errors:
@@ -8,7 +8,7 @@ def cli_json_print_errors(obj, schema):
         for prop in errors.keys():
             for error in errors[prop]:
                 print('%s: %s' % (prop, error))
-
+"""
 def cli_json_override_property(obj, schema, confirm_prompt=False):
     if confirm_prompt and not cli_confirm('Do you want to override a property?[y/n]: '):
             return
@@ -43,7 +43,7 @@ def cli_choose_option(options, msg=None):
         print(msg)
     print('Options:')
     for option in options:
-        print(option)
+        print(option, end=', ')
     while True:
         choice = input('Choose an option: ')
         if choice in options:
@@ -77,10 +77,8 @@ def cli_get_column(dataset, msg=None):
 def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kwargs):
     while True:
         value = input('{msg}(min:{min}, max:{max}, default:{default}: '.format(msg=msg, min=min, max=max, default=default))
-        
         if value == '' and default:
             value = default
-        
         try:
             int_value = int(value)
             if int_value >= min and int_value <= max:
@@ -123,8 +121,9 @@ def ask_json_value(instance, path, msg='Enter value for path', type=None):
 def cli_json_object_fix_errors(ob):
     while True:
         if ob.is_valid(): break
+        error = ob.get_errors()[0]
+        value = ask_json_value(ob.instance, error.set_path, error.message)
+        ob.set_single_value(list(error.set_path), value)
         
-        for error in ob.get_errors():
-            print(10*"=")
-            value = ask_json_value(ob.instance, error.set_path, error.message)
-            ob.set_value(list(error.set_path), value)
+        
+        
