@@ -28,3 +28,23 @@ def json_get_errors(obj, schema):
             
     return errors
 
+
+
+
+def json_find_items_by_key_generator(json_input, lookup_key, path=[]):
+    if isinstance(json_input, dict):
+        index = 0
+        for k, v in json_input.items():
+            if k == lookup_key:
+                path = path + [k]
+                yield v, k, path
+            else:
+                tmp_path = path + [k]
+                yield from json_find_items_by_key_generator(v, lookup_key, tmp_path)
+            index += 1
+    elif isinstance(json_input, list):
+        index = 0
+        for item in json_input:
+            path = path + [index]
+            yield from json_find_items_by_key_generator(item, lookup_key, path)
+
