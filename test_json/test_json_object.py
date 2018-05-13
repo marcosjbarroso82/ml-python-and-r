@@ -4,6 +4,7 @@ from jsonschema import Draft6Validator
 import copy
 import dpath
 
+
 class JsonObject():
         
     def __init__(self, schema, instance={}):
@@ -27,15 +28,6 @@ class JsonObject():
             dpath.set(current_schema, repl_path, sub_schema)
         return current_schema
     
-    
-    def get_errors_orig(self):
-        current_schema = self._get_updated_schema(self.instance, self.schema)
-        v = Draft6Validator(current_schema)
-        return v.iter_errors(self.instance)
-        # errors = sorted(v.iter_errors(instance), key=lambda e: e.path)
-        # for error in errors:
-        #     print(error.message)
-        
     def get_errors(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)
         v = Draft6Validator(current_schema)
