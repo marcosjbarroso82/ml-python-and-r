@@ -1,4 +1,5 @@
 import os
+import json
 from .json_helpers import load_json_from_file, json_cast_value
 """
 def cli_json_print_errors(obj, schema):
@@ -84,6 +85,7 @@ def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kw
             if int_value >= min and int_value <= max:
                 break
         except ValueError:
+            print(ValueError)
             pass
     return int_value
 
@@ -105,13 +107,15 @@ def cli_json_get_value_by_type(type, msg=None):
                     value = int(value)
                 elif type == 'number':
                     value = float(value)
+                elif type == 'dict':
+                    value = dict(json.loads(value))
                 return value
             except ValueError:
                 pass
 
 def ask_json_value(instance, path, msg='Enter value for path', type=None):
     # types = ["null[NOT-IMPLMENTED]", "boolean[NOT-IMPLEMENTED]", "object[NOT-IMPLEMENTED", "array[NOT-IMPLEMENTED]", "number", "integer", "string"]
-    types = ["number", "integer", "string"]
+    types = ["number", "integer", "string", "dict"]
     print(msg)
     print('path: %s' % path)
     if not type:
@@ -122,8 +126,23 @@ def cli_json_object_fix_errors(ob):
     while True:
         if ob.is_valid(): break
         error = ob.get_errors()[0]
-        value = ask_json_value(ob.instance, error.set_path, error.message)
-        ob.set_single_value(list(error.set_path), value)
+        
+        print(10*"=")
+        print(error.instance)
+        print(error.message)
+        
+        path = list(error.absolute_path)
+        
+        print('current path: %s' % path)
+        #if cli_confirm('Append something to the path?'):
+        extra_path = input('Enter extra path separated by ".": ')
+        path = path + extra_path.split('.')
+        
+        value = ask_json_value(ob.instance, error.absolute_path, error.message)
+        
+        print(error.set_path, value)
+        
+        ob.set_value(path, value)
         
         
         

@@ -33,17 +33,24 @@ class JsonObject():
         v = Draft6Validator(current_schema)
         errors = []
         for error in v.iter_errors(self.instance):
+            print('error.validator_value', error.validator_value)
             error.set_path = list(copy.deepcopy(error.absolute_path))
+            print(error.set_path)
             if error.validator == 'required':
                 error.set_path = error.set_path + error.validator_value
+                print(error.set_path)
             errors.append(error)
         return errors
     
-    def set_single_value(self, path, value):
-        #new_sub_instance = dict()
-        # dpath.util.new(new_sub_instance, path, value)
-        # dpath.util.merge(self.instance, new_sub_instance)
-        dpath.util.new(self.instance, path, value)
+    def set_value(self, path, value):
+        
+        if type(value) not in ['dict']:
+            dpath.util.new(self.instance, path, value)
+        else:
+            new_sub_instance = dict()
+            dpath.util.new(new_sub_instance, path, value)
+            print('new_sub_instance ',new_sub_instance)
+            dpath.util.merge(self.instance, new_sub_instance)    
         
     def is_valid(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)
@@ -51,11 +58,13 @@ class JsonObject():
         return v.is_valid(self.instance)
             
 
-schema = load_json_from_file('if-exists-and-condiftion.schema.json')
-instance = load_json_from_file('if-exists-and-condiftion.json')
+schema = load_json_from_file('ob_with_if_and_array.schema.json')
+instance = load_json_from_file('ob_with_if_and_array.json')
 
 ob = JsonObject(schema, instance)
 ob.is_valid()
+
+
 cli_json_object_fix_errors(ob)
 #e = ob.get_errors()[0]
 

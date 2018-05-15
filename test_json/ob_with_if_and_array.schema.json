@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "definitions": {
+    "p1": {
+      "required": [
+        "params"
+      ],
+      "properties": {
+        "params": {
+          "type": "object",
+          "required": [
+            "p1"
+          ],
+          "properties": {
+            "p1": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["name", "ds"],
+  "properties": {    
+    "name": {
+      "type": "string"
+    },
+    "ds": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "allOf": [
+              {
+                "then": {
+                  "$ref": "#/definitions/p1"
+                },
+                "if": {
+                  "properties": {
+                    "op": {
+                      "const": "p1"
+                    }
+                  }
+                }
+              }
+            ],
+            "required": [
+              "op"
+            ],
+            "properties": {
+              "op": {
+                "enum": [
+                  "p2",
+                  "p1"
+                ],
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

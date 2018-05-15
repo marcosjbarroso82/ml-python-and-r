@@ -1,0 +1,37 @@
+{
+  "definitions": {},
+  "type": "array",
+  "items": {
+    "required": [
+      "op"
+    ],
+    "type": "object",
+    "properties": {
+      "op": {
+        "type": "string",
+        "enum": [
+          "1",
+          "2",
+          "3"
+        ]
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "op": {
+            "constant": "1"
+          }
+        },
+        "then": {
+          "required": [
+            "p1"
+          ]
+        },
+"else": {
+"required": ["pd"]
+}
+      }
+    ]
+  }
+}

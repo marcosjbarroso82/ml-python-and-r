@@ -1,0 +1,28 @@
+{
+  "definitions": {
+    "op1": {
+      "required": ["params"],
+      "properties": {
+        "params": {
+          "type": "object",
+          "required": ["p11"],
+          "properties": {
+            "p11": {"type": "string"}
+          }          
+        }
+      }
+    }
+  },
+  "type": "array",
+  "items": {
+    "type": "object",
+    "dependencies": {
+      "op1": {"$ref": "#/definitions/op1"}
+    },
+    "properties": {
+      "op": {"type": "string","enum": ["p1","p2"]},
+      "op1": {"type": "string"},
+      "op2": {"type": "string"}
+    }
+  }
+}
