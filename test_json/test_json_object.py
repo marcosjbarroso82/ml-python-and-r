@@ -1,4 +1,4 @@
-from helpers.cli_helpers import cli_json_object_fix_errors
+from helpers.cli_helpers import cli_json_object_fix_errors, cli_confirm, cli_json_object_set_value
 from helpers.json_helpers import load_json_from_file, json_find_items_by_key_generator
 from jsonschema import Draft6Validator
 import copy
@@ -44,12 +44,18 @@ class JsonObject():
     
     def set_value(self, path, value):
         
-        if type(value) not in ['dict']:
+        if type(value) not in [dict, list]:
+            print(20*"*")
+            print(type(value))
             dpath.util.new(self.instance, path, value)
         else:
+            print(20*"*")
+            print(type(value))
             new_sub_instance = dict()
             dpath.util.new(new_sub_instance, path, value)
             print('new_sub_instance ',new_sub_instance)
+            print('instance ', self.instance)
+            
             dpath.util.merge(self.instance, new_sub_instance)    
         
     def is_valid(self):
@@ -62,11 +68,11 @@ schema = load_json_from_file('ob_with_if_and_array.schema.json')
 instance = load_json_from_file('ob_with_if_and_array.json')
 
 ob = JsonObject(schema, instance)
-ob.is_valid()
 
-
+#ob.is_valid()
 cli_json_object_fix_errors(ob)
-#e = ob.get_errors()[0]
 
-# conds = json_find_items_by_key_generator(schema, 'if')
-#next(conds)
+while True:
+    if not cli_confirm('Do you want to enter a new value?'):
+        break
+    cli_json_object_set_value(ob)    

@@ -33,7 +33,7 @@ def cli_json_schema_update_prop(prop, obj, schema):
 
 def cli_confirm(msg):
     while True:
-        answer = input(msg)
+        answer = input(msg + '[y/n]: ')
         if answer == 'n':
             return False
         elif answer == 'y':
@@ -109,13 +109,18 @@ def cli_json_get_value_by_type(type, msg=None):
                     value = float(value)
                 elif type == 'dict':
                     value = dict(json.loads(value))
+                elif type == 'json':
+                    value = json.loads(value)
                 return value
             except ValueError:
                 pass
 
 def ask_json_value(instance, path, msg='Enter value for path', type=None):
+    # TODO: path doesn't have a functionality here
+    # TODO: instance doesn't have a functionality here
+    
     # types = ["null[NOT-IMPLMENTED]", "boolean[NOT-IMPLEMENTED]", "object[NOT-IMPLEMENTED", "array[NOT-IMPLEMENTED]", "number", "integer", "string"]
-    types = ["number", "integer", "string", "dict"]
+    types = ["number", "integer", "string", "dict", "json"]
     print(msg)
     print('path: %s' % path)
     if not type:
@@ -144,5 +149,11 @@ def cli_json_object_fix_errors(ob):
         
         ob.set_value(path, value)
         
-        
+
+def cli_json_object_set_value(ob):
+    tmp_path = input('Enter path separated by ".": ')
+    path = tmp_path.split('.')
+    value = ask_json_value(ob.instance, path)
+    ob.set_value(path, value)
+    
         
