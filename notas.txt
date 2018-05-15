@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "required": ["bar"],
+  "properties": {
+    "foo": { "type": "string" },
+    "bar": { "type": "string" },
+    "model": {"type": "string", "enum": ["r", "c"]}
+  },
+  
+    "dependencies": {
+        "foo": {
+            "properties": {
+                "x": { "type": "integer" }
+            },
+            "required": ["x"]
+        }
+    }
+
+}
+
+################################
+{
+    "type": "object",
+"foo": {"type": "string", "enum": ["1", "2"]},
+    "oneOf": [
+        {
+            "properties": {
+                "foo": {"enum": ["1"]},
+                "bar": {
+                        "type": "string",
+                    "enum": ["1", "2"]
+                }
+            }
+        
+        }
+    ]
+}
+###################################
+
+draft 07!!!!
+#############
+{
+  "type": "object",
+  "properties": {
+    "foo": { "type": "string", "enum": ["bar", "baz"]},
+    "bar": { "type": "string" }
+  },
+  "if": {
+    "properties": {
+      "foo": { "enum": ["bar"] }
+    }
+  },
+  "then": { "required": ["bar"] }
+}
+
+#########################################
+type: object con enum ?

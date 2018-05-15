@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "definitions": {
+    "p1-cond": {"properties": {"op": {"const": "p1"}}},
+    "p1-value": {
+      "required": ["params"],
+      "properties": {
+        "params": {
+          "type": "object",
+          "required": ["ps1"],
+          "properties": {
+          "ps1": {"type": "string"}
+          }
+        }
+      }
+    }
+  },
+  "required": ["name", "ds"],
+  "properties": {
+    "name": {"type": "string"},
+    "ds": {
+      "type": "object",
+      "required": ["steps"],
+      "properties": {
+        "path": {"type": "string"},
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["op"],
+            "allOf": [
+              { "if": {"properties": {"op": {"const": "p1"}}},
+                "then": {"$ref": "#/definitions/p1-value"}}
+            ],
+            "properties": {
+              "op": {
+                "type": "string",
+                "enum": ["p1","p2"]
+              }
+            }
+            
+          }
+        }
+      }
+    }
+  }
+}

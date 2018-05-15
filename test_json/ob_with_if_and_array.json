@@ -1,1 +1,3 @@
-{"ds": {"path": "path"}, "name": "name"}
+{"ds": {"path": "path"}, "name": "name",
+"params": [{"op": "p1"}]
+}

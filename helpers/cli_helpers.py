@@ -132,9 +132,15 @@ def cli_json_object_fix_errors(ob):
         if ob.is_valid(): break
         error = ob.get_errors()[0]
         
-        print(10*"=")
-        print(error.instance)
-        print(error.message)
+        for e in ob.get_errors():
+            print(e.message)
+        
+        print(20*"=")
+        print('FIX ERROR')
+        print(20*"=")
+        #print('instance: ', ob.instance)
+        #print('schema: ', ob._get_updated_schema(ob.instance, ob.schema))
+        print('message: ',error.message)
         
         path = list(error.absolute_path)
         
@@ -144,8 +150,6 @@ def cli_json_object_fix_errors(ob):
         path = path + extra_path.split('.')
         
         value = ask_json_value(ob.instance, error.absolute_path, error.message)
-        
-        print(error.set_path, value)
         
         ob.set_value(path, value)
         

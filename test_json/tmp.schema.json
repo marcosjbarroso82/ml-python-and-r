@@ -1,37 +1,15 @@
-{
-  "definitions": {},
-  "type": "array",
-  "items": {
-    "required": [
-      "op"
-    ],
-    "type": "object",
-    "properties": {
-      "op": {
-        "type": "string",
-        "enum": [
-          "1",
-          "2",
-          "3"
-        ]
-      }
-    },
-    "allOf": [
-      {
-        "if": {
-          "op": {
-            "constant": "1"
-          }
-        },
-        "then": {
-          "required": [
-            "p1"
-          ]
-        },
-"else": {
-"required": ["pd"]
-}
-      }
-    ]
-  }
-}
+{"definitions": {"p1": {"properties": {"params": {"properties": {"p1": {"type": "string"}},
+     "required": ["p1"],
+     "type": "object"}},
+   "required": ["params"]}},
+ "properties": {"ds": {"properties": {"path": {"type": "string"},
+    "steps": {"items": {"allOf": [{"$ref": "#/definitions/p1"}],
+      "properties": {"op": {"enum": ["p2", "p1"], "type": "string"}},
+      "required": ["op"],
+      "type": "object"},
+     "type": "array"}},
+   "required": ["path"],
+   "type": "object"},
+  "name": {"type": "string"}},
+ "required": ["name", "ds"],
+ "type": "object"}
