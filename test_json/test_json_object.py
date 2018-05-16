@@ -3,6 +3,15 @@ from helpers.json_helpers import load_json_from_file, json_find_items_by_key_gen
 from jsonschema import Draft6Validator
 import copy
 import dpath
+from dpath.util import MERGE_REPLACE, MERGE_ADDITIVE, MERGE_TYPESAFE
+
+SCHEMA_RESERVED_WORDS = ['properties', 'items', 'if', 'anyOf', 'oneOf', 'allOf', 'definitions', 'dependencies']
+
+MERGE_POLICIES = {
+        'replace': MERGE_REPLACE,
+        'add': MERGE_ADDITIVE,
+        'safe': MERGE_TYPESAFE
+        }
 
 
 class JsonObject():
@@ -16,8 +25,7 @@ class JsonObject():
         for sub_schema_cond, _, sub_schema_path in json_find_items_by_key_generator(schema, 'if'):
             v_sub = Draft6Validator(sub_schema_cond)
             
-            SCHEMA_RESERVER_WORDS = ['properties', 'items', 'if', 'allOf']
-            path = [x for x in sub_schema_path if x not in SCHEMA_RESERVER_WORDS]
+            path = [x for x in sub_schema_path if x not in SCHEMA_RESERVED_WORDS]
             repl_path = sub_schema_path[:-1]
             try:
                 sub_instance = dpath.get(self.instance, path)                
@@ -42,25 +50,37 @@ class JsonObject():
     def get_errors(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)
         v = Draft6Validator(current_schema)
-        errors = []
-        for error in v.iter_errors(self.instance):
-            error.set_path = list(copy.deepcopy(error.absolute_path))
-            if error.validator == 'required':
-                error.set_path = error.set_path + error.validator_value
-            errors.append(error)
-        return errors
-    
-    def set_value(self, path, value):
-        try:
-            if len(path) > 1:
-                dpath.get(self.instance, path[:-1])
-            dpath.util.new(self.instance, path, value)
-        except KeyError:
-            print('KEY ERROR')
-            print('path ', path)
-            new_sub_instance = dict()
-            dpath.util.new(new_sub_instance, path, value)
-            dpath.util.merge(self.instance, new_sub_instance)    
+        return v.iter_errors(self.instance)
+        """
+            errors = []
+            for error in v.iter_errors(self.instance):
+                error.set_path = list(copy.deepcopy(error.absolute_path))
+                if error.validator == 'required':
+                    error.set_path = error.set_path + error.validator_value
+                errors.append(error)
+            return errors
+        """
+    def set_value(self, path, value, merge_policy='replace'):
+        merge_policy == MERGE_POLICIES.get(merge_policy)
+        tmp_instance = copy.deepcopy(self.instance)
+        tmp_path = []
+        for p in path:
+            print(tmp_path)
+            print(tmp_instance)
+            try:
+                dpath.get(tmp_instance, tmp_path)
+            except KeyError:
+                if type(p) == int:
+                    print('create array')
+                    dpath.util.new(tmp_instance, tmp_path, [])
+            tmp_path.append(p)
+            
+        dpath.util.new(tmp_instance, path, value)
+        print("MERGE")
+        print('tmp_instance:  ', tmp_instance)
+        print('self.instance: ', self.instance)
+        #dpath.util.merge(self.instance, tmp_instance, flags=merge_policy)    
+        dpath.util.merge(self.instance, tmp_instance, flags=MERGE_REPLACE)
         
     def is_valid(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)

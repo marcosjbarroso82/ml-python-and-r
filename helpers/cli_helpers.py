@@ -130,7 +130,7 @@ def ask_json_value(instance, path, msg='Enter value for path', type=None):
 def cli_json_object_fix_errors(ob):
     while True:
         if ob.is_valid(): break
-        error = ob.get_errors()[0]
+        error = next(ob.get_errors())
         
         for e in ob.get_errors():
             print(e.message)
@@ -138,7 +138,7 @@ def cli_json_object_fix_errors(ob):
         print(20*"=")
         print('FIX ERROR')
         print(20*"=")
-        #print('instance: ', ob.instance)
+        print('instance: ', ob.instance)
         #print('schema: ', ob._get_updated_schema(ob.instance, ob.schema))
         print('message: ',error.message)
         
