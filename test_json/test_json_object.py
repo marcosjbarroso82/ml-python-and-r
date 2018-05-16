@@ -61,7 +61,7 @@ class JsonObject():
             return errors
         """
     def set_value(self, path, value, merge_policy='replace'):
-        merge_policy == MERGE_POLICIES.get(merge_policy)
+        merge_flags = MERGE_POLICIES.get(merge_policy)
         tmp_instance = copy.deepcopy(self.instance)
         tmp_path = []
         for p in path:
@@ -79,8 +79,9 @@ class JsonObject():
         print("MERGE")
         print('tmp_instance:  ', tmp_instance)
         print('self.instance: ', self.instance)
+        print('merge_flags: ', merge_flags)
         #dpath.util.merge(self.instance, tmp_instance, flags=merge_policy)    
-        dpath.util.merge(self.instance, tmp_instance, flags=MERGE_REPLACE)
+        dpath.util.merge(self.instance, tmp_instance, flags=merge_flags)
         
     def is_valid(self):
         current_schema = self._get_updated_schema(self.instance, self.schema)

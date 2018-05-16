@@ -158,6 +158,7 @@ def cli_json_object_set_value(ob):
     tmp_path = input('Enter path separated by ".": ')
     path = tmp_path.split('.')
     value = ask_json_value(ob.instance, path)
-    ob.set_value(path, value)
+    merge_policy = cli_choose_option(['replace', 'add', 'safe'], 'Chosse a merge poicy')
+    ob.set_value(path, value, merge_policy)
     
         
