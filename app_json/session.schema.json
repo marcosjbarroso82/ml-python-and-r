@@ -1,17 +1,37 @@
-{  
-  "type": "object",  
-  "required": ["name", "ds_path", "model_path"],
+{
+  "type": "object",
+  "definitions": {
+    
+  },
   "properties": {
-    "name": {      
+    "action": {
       "type": "string"
     },
-    "ds_path": {
-      "type": "string",
-      "x-type": "file_path"      
-    },    
-    "model_path": {
-      "type": "string",
-      "x-type": "file_path"
+    "model": {
+      "type": "string"
+    },
+    "random_state": {
+      "type": "integer"
+    },
+    "test_size": {
+      "type": "number"
+    },
+    "ds": {
+      "type": "object",
+      "properties": {
+        "ds_path": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        }
+      }
+    },
+    "ds_preprocess_steps": {
+      "type": "array",
+      "items": {
+        "$ref": "file:app_json/ds_preprocess_step.schema.json"
+      }
     }
   }
 }

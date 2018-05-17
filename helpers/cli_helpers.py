@@ -1,15 +1,9 @@
 import os
 import json
-from .json_helpers import load_json_from_file, json_cast_value
-"""
-def cli_json_print_errors(obj, schema):
-    errors = json_get_errors(obj, schema)
-    if errors:
-        print('You have to correct this errors:')
-        for prop in errors.keys():
-            for error in errors[prop]:
-                print('%s: %s' % (prop, error))
-"""
+import dpath
+from .json_helpers import load_json_from_file, json_cast_value, json_schme_path_generator
+
+
 def cli_json_override_property(obj, schema, confirm_prompt=False):
     if confirm_prompt and not cli_confirm('Do you want to override a property?[y/n]: '):
             return
@@ -40,6 +34,15 @@ def cli_confirm(msg):
             return True
 
 def cli_choose_option(options, msg=None):
+    # TODO: Remove patch
+    # PATCH for arrays
+    list_flag = False
+    if type(options[0]) == list:
+        list_flag = True
+        new_options = []
+        for op in options:
+            new_options.append(".".join(op))
+        options = new_options
     if msg:
         print(msg)
     print('Options:')
@@ -50,6 +53,8 @@ def cli_choose_option(options, msg=None):
         if choice in options:
             break
         print('Wrong choice')
+    if list_flag:
+        return choice.split(".")
     return choice
 
 def cli_get_file_path(msg=None):
@@ -75,23 +80,11 @@ def cli_get_column(dataset, msg=None):
             print('Wrong answer!')
     return target_column
 
-def cli_get_integer(default=None, min=0, max=10, msg='Enter degree', *args, **kwargs):
-    while True:
-        value = input('{msg}(min:{min}, max:{max}, default:{default}: '.format(msg=msg, min=min, max=max, default=default))
-        if value == '' and default:
-            value = default
-        try:
-            int_value = int(value)
-            if int_value >= min and int_value <= max:
-                break
-        except ValueError:
-            print(ValueError)
-            pass
-    return int_value
-
 def cli_load_json_from_file():
     path = cli_get_file_path()
     return load_json_from_file(path)
+
+
 
 def cli_json_get_value_by_type(type, msg=None):
     # TODO: Implement all types
@@ -161,4 +154,38 @@ def cli_json_object_set_value(ob):
     merge_policy = cli_choose_option(['replace', 'add', 'safe'], 'Chosse a merge poicy')
     ob.set_value(path, value, merge_policy)
     
+def cli_json_get_value_by_schema(schema):
+    type = schema.get('type', 'string')
+    
+    while True:
+        value = input('Enter value: ')
+        try:
+            value = json_cast_value(value, type)
+            break
+        except:
+            pass
+    return value
+
+def cli_json_object_modify_instance(ob):
+    while True:
+        if not ob.is_valid():
+            cli_json_object_fix_errors(ob)
+    
+        if not cli_confirm('ingresar valor?'):
+            break
+            
+        paths = json_schme_path_generator(ob.get_updated_schema())
+        instance_paths = []
+        schema_paths = []
+        for p in paths:
+            instance_paths.append(p[0])
+            schema_paths.append(p[1])
         
+        path = cli_choose_option(instance_paths)
+        path_index = instance_paths.index(path)
+        schema_path = schema_paths[path_index]
+        
+        value = cli_json_get_value_by_schema(dpath.get(ob.schema, schema_path))
+        ob.set_value(path, value)
+    
+    

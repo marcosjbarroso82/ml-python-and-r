@@ -1,4 +1,5 @@
 {
-    "name": "session", 
-    "ds_path": ""
+"ds_preprocess_steps": [
+{"action2": "action"}
+]
 }

@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "action"
+  ],
+  "properties": {
+    "action": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "p1": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

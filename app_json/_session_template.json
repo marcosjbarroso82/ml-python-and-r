@@ -1,0 +1,11 @@
+{
+"action": "",
+"model": "",
+"random_state": 0,
+"test_size": 0.3,
+"ds":{
+"ds_path": "",
+"target": ""
+},
+"ds_preprocess_steps": []
+}
