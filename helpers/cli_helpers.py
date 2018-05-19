@@ -140,7 +140,17 @@ def cli_json_object_fix_errors(ob):
         print('current path: %s' % path)
         #if cli_confirm('Append something to the path?'):
         extra_path = input('Enter extra path separated by ".": ')
-        path = path + extra_path.split('.')
+        
+        if extra_path != '':
+            extra_path = int(extra_path)
+            extra_path_array = []
+            for p in extra_path.split('.'):
+                if p.isnumeric(): # TODO: Ask if it's actually a number
+                    extra_path_array.append(int(p))
+                else:
+                    extra_path_array.append(p)
+            
+            path = path + extra_path.split('.')
         
         value = ask_json_value(ob.instance, error.absolute_path, error.message)
         
@@ -155,6 +165,8 @@ def cli_json_object_set_value(ob):
     ob.set_value(path, value, merge_policy)
     
 def cli_json_get_value_by_schema(schema):
+    print(20*"=")
+    print("cli_json_get_value_by_schema")
     type = schema.get('type', 'string')
     
     while True:
@@ -180,12 +192,15 @@ def cli_json_object_modify_instance(ob):
         for p in paths:
             instance_paths.append(p[0])
             schema_paths.append(p[1])
-        
         path = cli_choose_option(instance_paths)
         path_index = instance_paths.index(path)
         schema_path = schema_paths[path_index]
         
         value = cli_json_get_value_by_schema(dpath.get(ob.schema, schema_path))
-        ob.set_value(path, value)
+        
+        merge_policy = 'replace'
+        if type(value) in [list, dict]:
+            merge_policy = cli_choose_option(['replace', 'add', 'safe'], msg='Choose merge policy')
+        ob.set_value(path, value, merge_policy)
     
     

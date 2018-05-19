@@ -12,6 +12,9 @@ def json_cast_value(value, value_type):
             value = int(value)
         except ValueError:
             raise
+    elif value_type in ['array', 'object']:
+        value = json.loads(value)
+    
     return value
 
 def json_find_items_by_key_generator(json_input, lookup_key, path=[]):
