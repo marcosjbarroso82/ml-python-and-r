@@ -53,3 +53,15 @@ def json_schme_path_generator(ob, path=[], schema_path=[]):
                 yield from json_schme_path_generator(value, path=path+[key], schema_path=schema_path + [key])
             else:
                 yield (path + [key], schema_path + [key])
+
+def json_pop_nested_item(instance, path=[]):
+    if len(path) == 0:
+        return instance
+    if len(path) == 1:
+        instance.pop(path[0])
+    else:
+        item = instance
+        for k in path[:-1]:
+            item = item.get(k)
+        item.pop(path[-1])
+    return instance
