@@ -68,3 +68,32 @@ def json_pop_nested_item(instance, path=[]):
             item = item.get(k)
         item.pop(path[-1])
     return instance
+
+
+def json_set_nested_value(instance, path, value):
+    """
+    It works with nested unexistent arrays.
+    it fails if something is preciously set where an array should be
+    """
+    x = copy.deepcopy(instance)
+    tp = []
+    
+    for idx, p in enumerate(path[:-1]):
+        tp.append(p)
+        try:
+            item = dpath.get(x, tp)
+            continue
+        except KeyError:
+            next_p =  path[idx + 1]
+            print('next_p: ', next_p)
+            if type(next_p) == int:
+                dpath.new(x, tp, [])
+            else:
+                dpath.new(x, tp, {})
+    
+    dpath.new(x, path, value)
+    return x
+        
+        
+        
+        
