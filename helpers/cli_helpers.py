@@ -4,6 +4,23 @@ import dpath
 from .json_helpers import load_json_from_file, json_cast_value, json_schme_path_generator
 
 
+def cli_choose_index_option(options, msg='Choose an option'):
+    
+    for index, op in enumerate(options):
+        print('%s- %s' % (index, op))
+    
+    while True:
+        op = input(msg + ': ') 
+        try:
+            op = int(op)
+            if op >= 0 and op < len(options):
+                break
+        except ValueError:
+            pass
+    return op
+        
+
+
 def cli_json_override_property(obj, schema, confirm_prompt=False):
     if confirm_prompt and not cli_confirm('Do you want to override a property?[y/n]: '):
             return

@@ -76,6 +76,7 @@ class JsonObject():
             pass
         if modified_flag:
             return self.get_updated_schema(current_schema)
+        current_schema.pop('definitions')
         return current_schema
     
     def get_errors(self):

@@ -1,5 +1,8 @@
 import json
 import copy
+import dpath
+from IPython.core.debugger import Pdb
+
 def load_json_from_file(path):
     with open(path, 'r') as file:
         obj = json.loads(file.read())
@@ -17,11 +20,21 @@ def json_cast_value(value, value_type):
     
     return value
 
-def json_find_items_by_key_generator(json_input, lookup_key, path=[]):
+from IPython.core.debugger import Pdb
+def deprecated_json_find_items_by_key_generator(json_input, lookup_key, path=[], skip_keys=[]):
+    print('json_find_items_by_key_generator')
+    print('json_input: ', json_input)
+    print('path: ', path)
+    
+    #if lookup_key == 'if':
+    Pdb().set_trace()
+    
+    #json_input = copy.deepcopy(json_input)
     if isinstance(json_input, dict):
+        
         index = 0
         for k, v in json_input.items():
-            if k == lookup_key:
+            if k == lookup_key and k not in skip_keys:
                 path = path + [k]
                 yield v, k, path
             else:
@@ -81,17 +94,50 @@ def json_set_nested_value(instance, path, value):
     for idx, p in enumerate(path[:-1]):
         tp.append(p)
         try:
-            item = dpath.get(x, tp)
+            dpath.get(x, tp)
             continue
         except KeyError:
             next_p =  path[idx + 1]
-            print('next_p: ', next_p)
             if type(next_p) == int:
                 dpath.new(x, tp, [])
             else:
                 dpath.new(x, tp, {})
     
-    dpath.new(x, path, value)
+    old_x = copy.deepcopy(x)
+    #Pdb().set_trace()
+    
+    try:
+        dpath.get(x, path)
+        
+        if path:
+            sx = dpath.get(x, path)
+            dpath.merge(sx, value)
+            dpath.set(x, path, sx)
+        else:
+            dpath.merge(x, value)
+    except:
+        if path:
+        
+            dpath.new(x, path, value)
+        else:
+            dpath.merge(x, value)
+    """
+    try:
+        dpath.new(x, path, value)
+    except Exception as e:
+        print(e)
+        #Pdb().set_trace()
+        if path:
+            sx = dpath.get(x, path)
+            dpath.merge(sx, value)
+            #dpath.set(x, path, sx)
+        else:
+            sx = x
+        dpath.merge(sx, value)
+        x =sx
+       """
+            
+    
     return x
         
         

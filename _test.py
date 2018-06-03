@@ -4,8 +4,12 @@ from helpers.cli_helpers import cli_json_object_fix_errors, cli_choose_option, c
 import dpath
 from jsonschema import Draft6Validator
 
-schema = load_json_from_file('app_json/session.schema.json')
-instance = load_json_from_file('app_json/session.json')
+# schema = load_json_from_file('app_json/session.schema.json')
+schema = load_json_from_file('app_json/ds_preprocess_step.schema.json')
+#instance = load_json_from_file('app_json/session.json')
+instance = {}
 
 ob = JsonObject(schema, instance)
 cli_json_object_modify_instance(ob)
+
+# ds_preprocess_steps
